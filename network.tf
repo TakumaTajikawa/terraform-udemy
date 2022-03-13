@@ -1,4 +1,6 @@
+# ----------------------------------------
 # VPC
+# ----------------------------------------
 resource "aws_vpc" "vpc" {
     cidr_block = "192.168.0.0/20"
     instance_tenancy = "default"
@@ -14,7 +16,9 @@ resource "aws_vpc" "vpc" {
 }
 
 
+# ----------------------------------------
 # Subnet
+# ----------------------------------------
 resource "aws_subnet" "public_subnet_1a" {
     vpc_id = aws_vpc.vpc.id
     availability_zone = "ap-northeast-1a"
@@ -72,7 +76,9 @@ resource "aws_subnet" "private_subnet_1c" {
 }
 
 
+# ----------------------------------------
 # Route table
+# ----------------------------------------
 resource "aws_route_table" "public_rt" {
     vpc_id = aws_vpc.vpc.id
 
@@ -116,7 +122,9 @@ resource "aws_route_table_association" "private_rt_1c" {
 }
 
 
+# ----------------------------------------
 # Internet Gateway
+# ----------------------------------------
 resource "aws_internet_gateway" "igw" {
     vpc_id = aws_vpc.vpc.id
 
