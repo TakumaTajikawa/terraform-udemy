@@ -81,6 +81,8 @@ resource "aws_db_instance" "mysql_standalone" {
     db_subnet_group_name = aws_db_subnet_group.mysql_standalone_subnetgroup.name
 
     vpc_security_group_ids = [ aws_security_group.db_sg.id ]
+
+    # インスタンスがパブリックにアクセス可能かどうかを制御する真偽値
     publicly_accessible = false
     port = 3306
 
@@ -100,9 +102,12 @@ resource "aws_db_instance" "mysql_standalone" {
     auto_minor_version_upgrade = false
 
     # 自動で削除させないか
-    deletion_protection = true
-    skip_final_snapshot = false
+    deletion_protection = false
 
+    # 削除時のスナップショットをスキップするか
+    skip_final_snapshot = true
+
+    # 即時反映するか
     apply_immediately = true
     
     tags = {
