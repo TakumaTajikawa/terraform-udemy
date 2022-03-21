@@ -1,6 +1,16 @@
 # ----------------------------------------
 # IAM Role
 # ----------------------------------------
+
+# EC2インスタンスとIAMロールを結びつける箱
+resource "aws_iam_instance_profile" "app_ec2_profile" {
+    # インスタンスプロフィール名（IAMロール名と一致させるのがオススメ。異なるとわかりずらい。）
+    name = aws_iam_role.app_iam_role.name
+
+    # IAMロール
+    role = aws_iam_role.app_iam_role.name
+}
+
 resource "aws_iam_role" "app_iam_role" {
     # IAMロール名
     name ="${var.project}-${var.environment}-app-iam-role"
