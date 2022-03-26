@@ -51,3 +51,33 @@ resource "aws_acm_certificate_validation" "cert_valid" {
     # DNS検証に利用するFQDN(ドメイン名 + ホスト名)
     validation_record_fqdns = [ for record in aws_route53_record.route53_acm_dns_resolve : record.fqdn ]
 }
+
+# for virginia region
+resource "aws_acm_certificate" "virginia_cert" {
+    provider = aws.virginia
+
+    # ドメイン名
+    domain_name = "*.${var.domain}"
+
+    # "DNS", "EMAIL", "NONE"のいずれかを記入
+    validation_method = "DNS"
+
+    tags = {
+        Name = "${var.project}-${var.environment}-wildcard-sslcert"
+        Project = var.project
+        Env = var.environment
+    }
+
+    # リソース操作の詳細制御を指定
+    lifecycle {
+        # 削除前に生成を行うか
+        create_before_destroy = true
+    }
+
+    # Route53との依存関係を定義
+    depends_on = [
+        aws_route53_zone.route53_zone
+    ]
+}
+
+
