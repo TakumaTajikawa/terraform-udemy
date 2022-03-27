@@ -35,7 +35,7 @@ resource "aws_s3_bucket_public_access_block" "s3_static_bucket" {
     ignore_public_acls = true
 
     # 所有者とAWSサービスのみにアクセス制限
-    restrict_public_buckets = false
+    restrict_public_buckets = true
     depends_on = [
         aws_s3_bucket_policy.s3_static_bucket
     ]
@@ -61,10 +61,10 @@ data "aws_iam_policy_document" "s3_static_bucket" {
         # 関連付けるエンティティ
         principals {
             # "AWS", "Service"など
-            type = "*"
+            type = "AWS"
 
             # ARN, サービスURLなど
-            identifiers =  [ "*" ]
+            identifiers =  [ aws_cloudfront_origin_access_identity.cf_s3_origin_access_identity.iam_arn ]
         }
     }
 }
