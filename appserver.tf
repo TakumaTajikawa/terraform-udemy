@@ -117,3 +117,47 @@ resource "aws_launch_template" "app_lt" {
 
     user_data = filebase64("./src/initialize.sh")
 }
+
+# ----------------------------------------
+# auto scaling group
+# ----------------------------------------
+resource "aws_autoscaling_group" "app_asg" {
+    # オートスケーリンググループ名
+    name = "${var.project}-${var.environment}-app-asg"
+
+    # 最大インスタンス数
+    max_size = 1
+
+    # 最小インスタンス数
+    min_size = 1
+
+    # 希望するインスタンス数
+    desired_capacity = 1
+
+    # 指定した時間以降にヘルスチェックを開始(秒)
+    health_check_grace_period = 300
+    # "EC2", "ELB"のいずれかを記述
+    health_check_type = "ELB"
+
+    # サブネット
+    vpc_zone_identifier = [
+        aws_subnet.public_subnet_1a.id,
+        aws_subnet.public_subnet_1c.id,
+    ]
+
+    # ELBのターゲットグループARN
+    target_group_arns = [aws_lb_target_group.alb_target_group.arn]
+
+    # ユーザーデータ
+    mixed_instances_policy {
+        launch_template {
+            launch_template_specification {
+                launch_template_id = aws_launch_template.app_lt.id
+                version = "$Latest"
+            }
+            override {
+                instance_type = "t2.micro"
+            }
+        }
+    }
+}
