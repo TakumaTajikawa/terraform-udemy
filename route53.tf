@@ -14,7 +14,7 @@ resource "aws_route53_zone" "route53_zone" {
     }
 }
 
-resource "aws_route53_record" "reoute53_record" {
+resource "aws_route53_record" "route53_record" {
     zone_id = aws_route53_zone.route53_zone.id
     name = "dev-elb.${var.domain}"
 
